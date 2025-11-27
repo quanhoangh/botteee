@@ -117,8 +117,11 @@ async def start_claim(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             except Exception as e:
                 await update.message.reply_text(f"⚠️ Lỗi claim: {e}")
+                await asyncio.sleep(7)
+                await start_claim(update, context)
+                
 
-            await asyncio.sleep(3)  # Delay giữa các lần claim
+            await asyncio.sleep(5)  # Delay giữa các lần claim
 
     claim_task = asyncio.create_task(claim_loop())
 
@@ -167,7 +170,7 @@ def main():
 
     app.add_handler(CommandHandler("start", start_bot))
     app.add_handler(CommandHandler("login", login))
-    app.add_handler(CommandHandler("startclaim", start_claim))  # dùng /startclaim để bắt đầu
+    app.add_handler(CommandHandler("starts", start_claim))  # dùng /startclaim để bắt đầu
     app.add_handler(CommandHandler("check", check_info))
     app.add_handler(CommandHandler("stop", stop_claim))
     app.add_handler(CommandHandler("out", exit_bot))
