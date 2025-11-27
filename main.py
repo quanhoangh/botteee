@@ -141,37 +141,13 @@ async def exit_bot(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("🚪 Bot sẽ thoát...")
     if app:
         await app.stop()
-async def check_info(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not session_cookies:
-        await update.message.reply_text("❌ Bạn chưa login. Dùng /login <code> trước!")
-        return
-
-    await update.message.reply_text("⏳ Đang lấy thông tin người chơi...")
-
-    try:
-        response = requests.get(DASHBOARD_URL, headers=HEADERS, cookies=session_cookies, timeout=20)
-        html = response.text
-
-        # Regex: lấy <div>key: <span>value</span></div>
-        pattern = r'<div[^>]*>\s*([^:<>]+):\s*<span[^>]*>(.*?)</span>'
-        matches = re.findall(pattern, html, re.DOTALL)
-        player_info = {k.strip(): v.strip() for k, v in matches}
-
-        if player_info:
-            msg = "\n".join([f"{k}: {v}" for k, v in player_info.items()])
-            await update.message.reply_text(f"📄 Thông tin người chơi:\n{msg}")
-        else:
-            await update.message.reply_text("❌ Không lấy được thông tin người chơi!")
-
-    except Exception as e:
-        await update.message.reply_text(f"❌ Lỗi khi check info: {e}")        
+   
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start_bot))
     app.add_handler(CommandHandler("login", login))
     app.add_handler(CommandHandler("starts", start_claim))  # dùng /startclaim để bắt đầu
-    app.add_handler(CommandHandler("check", check_info))
     app.add_handler(CommandHandler("stop", stop_claim))
     app.add_handler(CommandHandler("out", exit_bot))
     
